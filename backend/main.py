@@ -1,6 +1,9 @@
 import json, secrets
 from datetime import date
+from pathlib import Path
 from fastapi import Depends, FastAPI, HTTPException
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, field_validator
 from .auth import create_token, hash_password, token_user, verify_password
@@ -94,3 +97,13 @@ def shared(token:str):
     with connection() as db: row=db.execute("SELECT * FROM trips WHERE share_token=?",(token,)).fetchone()
     if not row: raise HTTPException(404,"Shared trip not found")
     return trip_dict(row)
+
+# In production the Vite build is served by the same process as the API.
+DIST=Path(__file__).resolve().parent.parent / "dist"
+if DIST.exists():
+    app.mount("/assets",StaticFiles(directory=DIST / "assets"),name="assets")
+    @app.get("/{full_path:path}",include_in_schema=False)
+    def frontend(full_path:str):
+        candidate=(DIST / full_path).resolve()
+        if candidate.is_file() and DIST.resolve() in candidate.parents: return FileResponse(candidate)
+        return FileResponse(DIST / "index.html")

@@ -1,8 +1,9 @@
-import json, sqlite3
+import json, os, sqlite3
 from contextlib import contextmanager
 from pathlib import Path
 
-DB_PATH = Path(__file__).parent / "roamly.db"
+DB_PATH = Path(os.getenv("ROAMLY_DB_PATH", str(Path(__file__).parent / "roamly.db")))
+DB_PATH.parent.mkdir(parents=True, exist_ok=True)
 
 @contextmanager
 def connection():

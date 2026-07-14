@@ -2,6 +2,7 @@ services:
   - type: web
     name: where-ujwal-wants-to-go
     runtime: docker
+    plan: free
     repo: https://github.com/ujwalchitra/trip-planner
     branch: main
     autoDeploy: true
@@ -10,10 +11,6 @@ services:
       - key: ROAMLY_SECRET
         generateValue: true
       - key: ROAMLY_DB_PATH
-        value: /data/roamly.db
+        value: /tmp/roamly.db
       - key: OSM_USER_AGENT
         value: where-ujwal-wants-to-go/1.0
-    disk:
-      name: trip-data
-      mountPath: /data
-      sizeGB: 1

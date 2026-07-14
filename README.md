@@ -16,4 +16,4 @@ Set `ROAMLY_SECRET` to a long random value in production. Major Indian cities us
 
 ## Deploy to Render
 
-The included `render.yaml` and `Dockerfile` deploy the frontend and backend as one service. In Render, choose **New → Blueprint**, connect this repository, and apply the detected blueprint. The configured persistent disk keeps saved trips across deployments.
+The included `render.yaml` and `Dockerfile` deploy the frontend and backend as one free web service. In Render, choose **New → Blueprint**, connect this repository, and apply the detected blueprint. Free instances use ephemeral SQLite storage, so saved trips may reset when Render recycles the service. Add a persistent disk and change `ROAMLY_DB_PATH` to `/data/roamly.db` for durable production storage.
